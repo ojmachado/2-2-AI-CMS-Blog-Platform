@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { dbService } from '../services/dbService';
 import { emailService } from '../services/emailService';
@@ -103,37 +102,6 @@ export const AdminSettings: React.FC = () => {
         )}
 
         <div className="p-8 space-y-10">
-            {/* Credenciais Essenciais */}
-            <section className="space-y-6 p-6 bg-amber-50/60 rounded-xl border border-amber-200">
-                <div className="flex items-center gap-2 border-b border-amber-200 pb-2">
-                    <div className="p-2 bg-amber-500 rounded-lg text-white shadow-sm shadow-amber-100"><ShieldAlert size={18} /></div>
-                    <h2 className="font-bold text-slate-900">Credenciais do Ambiente</h2>
-                </div>
-                <p className="text-sm text-amber-800 leading-relaxed">
-                    <strong>Ação Manual Necessária:</strong> Salve suas chaves aqui para referência. Para que o sistema funcione, você <strong>DEVE</strong> copiar e colar estes valores no painel de <strong>Environment Variables</strong> do seu projeto na Vercel.
-                </p>
-                <div className="space-y-4">
-                    <div>
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5 mb-1">
-                            <Database size={12} /> Vercel Var: <code>POSTGRES_URL</code>
-                        </label>
-                        <input type="password" name="postgresUrl" value={settings.postgresUrl} onChange={handleChange} placeholder="postgres://user:pass@host/db?sslmode=require" className="w-full rounded-lg border-slate-300 text-sm focus:ring-indigo-500" />
-                    </div>
-                    <div>
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5 mb-1">
-                            <UserCheck size={12} /> Vercel Var: <code>NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY</code>
-                        </label>
-                        <input type="password" name="clerkPublishableKey" value={settings.clerkPublishableKey} onChange={handleChange} placeholder="pk_test_..." className="w-full rounded-lg border-slate-300 text-sm focus:ring-indigo-500" />
-                    </div>
-                    <div>
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5 mb-1">
-                            <Key size={12} /> Vercel Var: <code>CLERK_SECRET_KEY</code>
-                        </label>
-                        <input type="password" name="clerkSecretKey" value={settings.clerkSecretKey} onChange={handleChange} placeholder="sk_test_..." className="w-full rounded-lg border-slate-300 text-sm focus:ring-indigo-500" />
-                    </div>
-                </div>
-            </section>
-
             {/* WhatsApp Híbrido */}
             <section className="space-y-6">
                 <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
