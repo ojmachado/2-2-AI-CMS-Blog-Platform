@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { dbService } from '../services/dbService';
 import { Link } from 'react-router-dom';
@@ -26,8 +25,6 @@ export const AdminDebug: React.FC = () => {
     checkDb();
   }, []);
 
-  const hasDiscoveredVars = status?.diagnostics?.discoveredVars && Object.keys(status.diagnostics.discoveredVars).length > 0;
-
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-20">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -46,6 +43,8 @@ export const AdminDebug: React.FC = () => {
             </Link>
             <a 
                 href="/neon" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 active:scale-95"
             >
                 <Terminal size={18} /> Testar Server Actions
@@ -73,14 +72,9 @@ export const AdminDebug: React.FC = () => {
                 </h3>
                 <p className={`mt-1 font-medium ${status?.connected ? 'text-green-700' : 'text-red-700'}`}>
                     {status?.connected 
-                        ? 'O sistema conseguiu se conectar, autenticar e consultar o banco de dados.' 
-                        : 'Não foi possível estabelecer conexão. Revise as credenciais e logs abaixo.'}
+                        ? 'O sistema conseguiu se conectar e consultar o banco de dados via API.' 
+                        : 'Não foi possível estabelecer conexão via API. Revise as credenciais e logs.'}
                 </p>
-                {status?.diagnostics?.isSingleton && (
-                    <span className="inline-flex items-center gap-1 text-[10px] uppercase font-black tracking-widest text-indigo-500 bg-indigo-50 px-2 py-1 rounded-md mt-2 border border-indigo-100">
-                        <Zap size={10} /> Modo Singleton Ativo (Otimizado para Neon)
-                    </span>
-                )}
             </div>
         </div>
 
@@ -95,6 +89,12 @@ export const AdminDebug: React.FC = () => {
                     <div className="mb-6 p-5 bg-red-50 text-red-800 rounded-2xl border border-red-100 font-mono text-xs overflow-auto">
                         <strong className="block mb-2 font-black uppercase tracking-widest flex items-center gap-2"><XCircle size={14}/> Erro Reportado:</strong>
                         {status.error}
+                        {status.error.includes('API Unreachable') && (
+                            <div className="mt-4 pt-3 border-t border-red-200 text-red-900">
+                                <strong className="font-sans font-bold">Ação Recomendada:</strong>
+                                <p className="font-sans">Este erro indica que a API do backend (`/api/nile`) falhou criticamente (crash) e não retornou uma resposta JSON. Verifique os logs da função correspondente no painel da Vercel para encontrar o erro exato que causou a falha.</p>
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -124,22 +124,22 @@ export const AdminDebug: React.FC = () => {
                 </div>
                 <h4 className="font-black text-slate-900 text-lg">Infraestrutura</h4>
                 <p className="text-slate-500 text-sm mt-1 font-medium">
-                    {status?.diagnostics?.activeKey?.includes('NEON') || status?.diagnostics?.activeKey?.includes('dois_ai') ? 'Neon Serverless (Detectado)' : 'Standard Postgres'}
+                    Standard Postgres
                 </p>
                 <div className="mt-6 pt-6 border-t border-slate-100">
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-2">Driver Status</p>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-2">DRIVER STATUS</p>
                     <span className={`text-lg font-black ${status?.connected ? 'text-green-600' : 'text-red-400'}`}>
-                       {status?.connected ? 'Active Pool' : 'Pool Error'}
+                       {status?.connected ? 'Conectado' : (status?.error ? 'Falha' : 'Offline')}
                     </span>
-                    <p className="text-[10px] text-slate-400 mt-1">pg/8.11.3</p>
+                    <p className="text-[10px] text-slate-400 mt-1 font-mono">{status?.diagnostics?.driver || 'N/A'}</p>
                 </div>
             </div>
         </div>
 
-        {/* Variáveis Esperadas (Checklist) */}
+        {/* Checklist de Variáveis */}
         <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
             <h3 className="font-bold text-slate-900 mb-6 flex items-center gap-2 text-lg">
-                <LinkIcon size={20} className="text-indigo-600" /> Checklist: Variáveis Neon/Vercel
+                <LinkIcon size={20} className="text-indigo-600" /> Checklist: Variáveis de Ambiente (Vercel)
             </h3>
             
             <div className="overflow-x-auto">
@@ -159,11 +159,11 @@ export const AdminDebug: React.FC = () => {
                                 </td>
                                 <td className="py-3 border-b border-slate-50 text-right">
                                     <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide ${
-                                        val === 'Missing' 
+                                        val.toLowerCase().includes('missing')
                                             ? 'bg-slate-100 text-slate-400' 
-                                            : val.includes('SSL MISSING') ? 'bg-amber-50 text-amber-700 border border-amber-100' : 'bg-green-50 text-green-700 border border-green-100'
+                                            : val.toLowerCase().includes('ssl missing') ? 'bg-amber-50 text-amber-700 border border-amber-100' : 'bg-green-50 text-green-700 border border-green-100'
                                     }`}>
-                                        {val === 'Missing' ? <XCircle size={10}/> : val.includes('SSL MISSING') ? <AlertTriangle size={10} /> : <CheckCircle size={10}/>}
+                                        {val.toLowerCase().includes('missing') ? <XCircle size={10}/> : val.toLowerCase().includes('ssl missing') ? <AlertTriangle size={10} /> : <CheckCircle size={10}/>}
                                         {val}
                                     </span>
                                 </td>

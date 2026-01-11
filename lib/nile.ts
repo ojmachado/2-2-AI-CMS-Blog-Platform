@@ -9,23 +9,24 @@ const URL_KEYS = ['POSTGRES_URL', 'DATABASE_URL'];
 
 // Função para obter a string de conexão e garantir SSL para o Neon
 const getConnectionString = (): string | undefined => {
+  console.log('[Database] Searching for connection string...');
   let connectionString: string | undefined;
   
   for (const key of URL_KEYS) {
-    if (process.env[key]) {
-      connectionString = process.env[key];
+    const envVar = process.env[key];
+    if (envVar && envVar.trim() !== '') {
+      connectionString = envVar;
       activeKey = key;
+      console.log(`[Database] Found connection string in env var: ${key}`);
       break;
     }
   }
 
   if (!connectionString) {
-    initError = `Database connection failed: Please set the ${URL_KEYS[0]} environment variable in your Vercel project.`;
+    initError = `Database connection failed: None of the required environment variables (${URL_KEYS.join(', ')}) are set or they are empty.`;
     console.error(`[Database] ${initError}`);
     return undefined;
   }
-
-  console.log(`[Database] Attempting to connect via: ${activeKey}`);
 
   if (connectionString.includes('.neon.tech') && !connectionString.includes('sslmode')) {
     connectionString += (connectionString.includes('?') ? '&' : '?') + 'sslmode=require';
@@ -37,14 +38,19 @@ const getConnectionString = (): string | undefined => {
 
 // Inicializa a conexão
 try {
+  console.log('[Database] Initializing connection module...');
   const connectionString = getConnectionString();
   if (connectionString) {
     sql = neon(connectionString);
     initError = null;
+    console.log('[Database] Neon client initialized successfully.');
+  } else {
+    // initError is already set by getConnectionString
+    sql = null;
   }
 } catch (error: any) {
-  initError = `Failed to create database connection: ${error.message}`;
-  console.error(`[Database] ${initError}`);
+  initError = `Failed to create Neon client instance: ${error.message}`;
+  console.error(`[Database] CRITICAL_INIT_ERROR: ${initError}`);
 }
 
 // Wrapper para manter compatibilidade com a API do 'pg' (pool.query)
@@ -68,7 +74,7 @@ export const getDebugInfo = () => {
     const envStatus: Record<string, string> = {};
     URL_KEYS.forEach(k => {
         const val = process.env[k];
-        if (val) {
+        if (val && val.trim() !== '') {
             if (val.startsWith('postgres')) {
                 const hasSSL = val.includes('sslmode=require');
                 envStatus[k] = `Set. Valid format. ${hasSSL ? '[SSL OK]' : '[SSL Missing]'}`;
@@ -76,7 +82,7 @@ export const getDebugInfo = () => {
                 envStatus[k] = `Set, but format is invalid. Must start with 'postgres://'.`;
             }
         } else {
-            envStatus[k] = 'Missing';
+            envStatus[k] = 'Missing or Empty';
         }
     });
 
