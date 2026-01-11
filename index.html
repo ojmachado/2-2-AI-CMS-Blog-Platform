@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI CMS Blog - Premium Experience</title>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/reactflow@11.10.1/dist/style.min.css" rel="stylesheet">
+    <script src="https://editor.unlayer.com/embed.js"></script>
+    <style>
+      body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+      #root { min-height: 100vh; }
+      .prose { font-family: 'Merriweather', serif; }
+      .prose h1, .prose h2, .prose h3, .prose h4 { font-family: 'Inter', sans-serif; }
+      /* Hide default scrollbar for ToC but keep functionality */
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+    <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0",
+    "react/": "https://esm.sh/react@18.2.0/",
+    "react-dom": "https://esm.sh/react-dom@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "react-dom/server": "https://esm.sh/react-dom@18.2.0/server",
+    "react-router-dom": "https://esm.sh/react-router-dom@6.22.3?deps=react@18.2.0,react-dom@18.2.0",
+    "@google/genai": "https://esm.sh/@google/genai@0.10.0",
+    "lucide-react": "https://esm.sh/lucide-react@0.344.0?deps=react@18.2.0",
+    "@hello-pangea/dnd": "https://esm.sh/@hello-pangea/dnd@16.6.0?deps=react@18.2.0,react-dom@18.2.0",
+    "reactflow": "https://esm.sh/reactflow@11.10.1?deps=react@18.2.0,react-dom@18.2.0",
+    "zustand": "https://esm.sh/zustand@4.5.2?deps=react@18.2.0",
+    "uuid": "https://esm.sh/uuid@9.0.1",
+    "react-markdown": "https://esm.sh/react-markdown@9.0.1?deps=react@18.2.0",
+    "remark-gfm": "https://esm.sh/remark-gfm@4.0.0",
+    "react-simplemde-editor": "https://esm.sh/react-simplemde-editor@5.2.0?deps=react@18.2.0,react-dom@18.2.0",
+    "react-email-editor": "https://esm.sh/react-email-editor@1.7.11?deps=react@18.2.0,react-dom@18.2.0",
+    "easymde": "https://esm.sh/easymde@2.18.0",
+    "crypto-js": "https://esm.sh/crypto-js@4.2.0",
+    "crypto": "https://esm.sh/crypto@^1.0.1",
+    "next": "https://esm.sh/next@14.1.0",
+    "tailwindcss": "https://esm.sh/tailwindcss@^3.4.1",
+    "@tailwindcss/typography": "https://esm.sh/@tailwindcss/typography@^0.5.10",
+    "pg": "https://esm.sh/pg@^8.11.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "next/": "https://esm.sh/next@^16.1.1/",
+    "reactflow/": "https://esm.sh/reactflow@^11.11.4/",
+    "easymde/": "https://esm.sh/easymde@^2.20.0/",
+    "@neondatabase/serverless": "https://esm.sh/@neondatabase/serverless@^1.0.2"
+  }
+}
+</script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 antialiased">
+    <div id="root"></div>
+    <script type="module" src="./index.tsx"></script>
+  </body>
+</html>
