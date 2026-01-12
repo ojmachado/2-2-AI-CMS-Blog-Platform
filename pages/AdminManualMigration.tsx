@@ -4,6 +4,32 @@ import { Link } from 'react-router-dom';
 import { Hammer, Terminal, ArrowLeft, CheckCircle, XCircle, Loader2, Info } from 'lucide-react';
 
 export const AdminManualMigration: React.FC = () => {
+  const [logs, setLogs] = useState<string[]>([]);
+  const [isMigrating, setIsMigrating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  const handleRunMigration = async () => {
+    setIsMigrating(true);
+    setError(null);
+    setSuccess(false);
+    setLogs([]);
+
+    try {
+      const result = await dbService.runMigration();
+      setLogs(result.logs || []);
+      if (result.error) {
+        throw new Error(result.error);
+      }
+      setSuccess(true);
+    } catch (err: any) {
+      setError(err.message || 'Ocorreu um erro desconhecido durante a migração.');
+      setLogs(prev => [...prev, `ERRO: ${err.message}`]);
+    } finally {
+      setIsMigrating(false);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-20">
       <div className="flex items-center gap-4">
@@ -12,7 +38,7 @@ export const AdminManualMigration: React.FC = () => {
         </Link>
         <div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tight">Migração do Banco</h1>
-          <p className="text-slate-500 mt-1">Status da migração do schema do banco de dados.</p>
+          <p className="text-slate-500 mt-1">Sincronize as tabelas e colunas do seu banco de dados Postgres.</p>
         </div>
       </div>
 
@@ -20,15 +46,16 @@ export const AdminManualMigration: React.FC = () => {
         <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto text-indigo-600 mb-4 shadow-inner">
           <Hammer size={32} />
         </div>
-        <h2 className="text-xl font-bold text-slate-800">Migrações Desativadas</h2>
-        <p className="text-slate-500 mt-2 mb-6 max-w-md mx-auto">A aplicação está em modo local e não requer migrações de banco de dados.</p>
+        <h2 className="text-xl font-bold text-slate-800">Atualização de Schema</h2>
+        <p className="text-slate-500 mt-2 mb-6 max-w-md mx-auto">Execute este comando se encontrar erros como "table does not exist" ou "column does not exist". É seguro executar múltiplas vezes.</p>
         
         <button
-          disabled
-          className="bg-slate-300 text-white px-8 py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 mx-auto cursor-not-allowed"
+          onClick={handleRunMigration}
+          disabled={isMigrating}
+          className="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 mx-auto shadow-xl shadow-indigo-100 active:scale-95 disabled:opacity-50"
         >
-          <Hammer size={20} />
-          Iniciar Migração
+          {isMigrating ? <Loader2 className="animate-spin" size={20} /> : <Hammer size={20} />}
+          {isMigrating ? 'Sincronizando...' : 'Iniciar Sincronização'}
         </button>
       </div>
 
@@ -37,13 +64,28 @@ export const AdminManualMigration: React.FC = () => {
               <h4 className="text-white font-bold flex items-center gap-3">
                   <Terminal size={16} /> Console de Saída
               </h4>
-              <div className="flex items-center gap-2 text-green-400 font-bold"><CheckCircle size={16}/> Ocioso</div>
+              {isMigrating ? (
+                  <div className="flex items-center gap-2 text-amber-400"><Loader2 className="animate-spin" size={16}/> Processando...</div>
+              ) : error ? (
+                  <div className="flex items-center gap-2 text-red-400 font-bold"><XCircle size={16}/> Falha</div>
+              ) : success ? (
+                  <div className="flex items-center gap-2 text-green-400 font-bold"><CheckCircle size={16}/> Concluído</div>
+              ) : (
+                  <div className="flex items-center gap-2 text-slate-400">Ocioso</div>
+              )}
           </div>
-          <div className="space-y-1.5 text-slate-300">
-             <div className="flex gap-3 items-start">
-                <span className="text-slate-600 select-none">[1]</span>
-                <span className="flex-1 break-words">Modo LocalStorage Ativo. Nenhuma ação de migração é necessária.</span>
-              </div>
+          <div className="space-y-1.5 text-slate-300 max-h-80 overflow-y-auto">
+              {logs.map((log, index) => (
+                  <div key={index} className="flex gap-3 items-start">
+                      <span className="text-slate-600 select-none">[{index + 1}]</span>
+                      <span className={`flex-1 break-words ${log.startsWith('CRITICAL') || log.startsWith('ERRO') ? 'text-red-400' : ''}`}>
+                          {log}
+                      </span>
+                  </div>
+              ))}
+              {!isMigrating && logs.length === 0 && (
+                  <p className="text-slate-500">Aguardando início da migração...</p>
+              )}
           </div>
       </div>
     </div>

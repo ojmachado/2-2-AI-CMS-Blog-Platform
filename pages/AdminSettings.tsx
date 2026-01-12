@@ -102,6 +102,30 @@ export const AdminSettings: React.FC = () => {
         )}
 
         <div className="p-8 space-y-10">
+            {/* Credenciais Essenciais */}
+            <section className="space-y-6">
+                <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
+                    <div className="p-2 bg-red-600 rounded-lg text-white shadow-sm shadow-red-100"><Key size={18} /></div>
+                    <h2 className="font-bold text-slate-900">Credenciais Essenciais</h2>
+                </div>
+                <div className="space-y-4 p-4 bg-red-50/30 rounded-xl border border-red-100">
+                    <div>
+                        <label className="text-xs font-bold text-red-900 uppercase tracking-widest flex items-center gap-2 mb-2"><Database size={14}/> URL do Banco de Dados (Postgres)</label>
+                        <input type="password" name="postgresUrl" value={settings.postgresUrl} onChange={handleChange} placeholder="postgres://user:pass@host/db" className="w-full rounded-lg border-slate-300 text-sm focus:ring-red-500 font-mono" />
+                    </div>
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                         <div>
+                            <label className="text-xs font-bold text-red-900 uppercase tracking-widest flex items-center gap-2 mb-2"><UserCheck size={14}/> Clerk Public Key</label>
+                            <input type="text" name="clerkPublishableKey" value={settings.clerkPublishableKey} onChange={handleChange} placeholder="pk_test_..." className="w-full rounded-lg border-slate-300 text-sm focus:ring-red-500" />
+                         </div>
+                         <div>
+                            <label className="text-xs font-bold text-red-900 uppercase tracking-widest flex items-center gap-2 mb-2"><UserCheck size={14}/> Clerk Secret Key</label>
+                            <input type="password" name="clerkSecretKey" value={settings.clerkSecretKey} onChange={handleChange} placeholder="sk_test_..." className="w-full rounded-lg border-slate-300 text-sm focus:ring-red-500" />
+                         </div>
+                     </div>
+                </div>
+            </section>
+            
             {/* WhatsApp Híbrido */}
             <section className="space-y-6">
                 <div className="flex items-center gap-2 border-b border-slate-100 pb-2">

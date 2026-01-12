@@ -1,4 +1,3 @@
-
 # AI Ecosystem Platform 🤖🚀
 
 Uma plataforma completa de CMS para Blogs, CRM e Automação de Marketing impulsionada por Inteligência Artificial (Gemini 3).
@@ -7,7 +6,7 @@ Uma plataforma completa de CMS para Blogs, CRM e Automação de Marketing impuls
 
 - Node.js 18+
 - NPM ou Yarn
-- Conta no [The Nile (Database)](https://thenile.dev)
+- Conta no [Neon](https://neon.tech) (Postgres)
 - Conta no [Google AI Studio](https://aistudio.google.com)
 - Conta no [Clerk Auth](https://clerk.com)
 
@@ -33,32 +32,21 @@ npm run dev
 
 ---
 
-## 🔐 Configuração de Variáveis de Ambiente (.env)
+## 🔐 Configuração de Variáveis de Ambiente (.env.local)
 
 Crie um arquivo chamado `.env.local` na raiz do projeto. Este arquivo não deve ser commitado no Git.
 
-### 1. Banco de Dados (The Nile / Postgres)
+### 1. Banco de Dados (Neon / Postgres)
 
-O sistema aceita os padrões de conexão do Vercel e do Nile. Você deve usar **uma** das opções abaixo. A aplicação prioriza a variável `POSTGRES_URL`.
+O sistema aceita os padrões de conexão do Vercel e do Neon. Copie a string de conexão "Postgres URL" do seu projeto Neon e cole-a aqui.
 
-Copie e cole seus dados de conexão no `.env.local`:
+A aplicação irá procurar por `POSTGRES_URL` ou `DATABASE_URL` no seu ambiente.
 
 ```env
-# --- Opção A: Padrão Vercel / Nile (Recomendado) ---
-# Esta é a string de conexão completa.
-POSTGRES_URL="postgres://user:password@us-west-2.db.thenile.dev/nile_lime_school"
-
-# --- Variáveis Auxiliares Nile (Opcionais se POSTGRES_URL estiver definido) ---
-NILEDB_URL="postgres://user:password@us-west-2.db.thenile.dev/nile_lime_school"
-NILEDB_POSTGRES_URL="postgres://us-west-2.db.thenile.dev/nile_lime_school"
-NILEDB_API_URL="https://us-west-2.api.thenile.dev/v2/databases/..."
-
-# --- Opção B: Credenciais Individuais (Fallback) ---
-# Use apenas se não tiver a string completa
-NILEDB_USER="seu_usuario_uuid"
-NILEDB_PASSWORD="sua_senha"
-NILEDB_HOST="us-west-2.db.thenile.dev"
-NILEDB_NAME="nile_lime_school"
+# --- Conexão com o Banco de Dados Neon (Obrigatório) ---
+# Cole a string de conexão do seu projeto Neon.
+# Ela deve se parecer com: postgres://user:password@endpoint.neon.tech/dbname
+POSTGRES_URL="sua_string_de_conexao_neon_aqui"
 ```
 
 ### 2. Inteligência Artificial (Google Gemini)
@@ -110,7 +98,7 @@ Este projeto é otimizado para deploy na **Vercel**.
 - `/app`: Rotas e Páginas (Next.js App Router).
 - `/app/api`: Endpoints de API (Backend Serverless).
 - `/components`: Componentes React reutilizáveis.
-- `/services`: Lógica de negócios (Chamadas Nile, Gemini, etc).
+- `/services`: Lógica de negócios (Chamadas de API, Gemini, etc).
 - `/lib`: Configurações de clientes (DB, Auth).
 - `/types`: Definições de Tipos TypeScript.
 
